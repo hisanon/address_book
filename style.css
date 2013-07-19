@@ -1,0 +1,31 @@
+
+.back { width:960px; margin-left:auto; margin-right:auto; background-color:#EEFFFF}  /* 全体の背景色 skyblue*/
+.h1 {width:400px; text-align: center; background:#6699FF; color:#191970;}
+.name {width:560px; text-align: center; }
+.heder {width:240px; text-align: center; background:#3333CC; color:#ffffff;}
+.red {color:red; font-size:small }
+
+a{/*リンクされた文字*/
+    color:ffffff;
+    font-style:normal;
+    text-decoration:underline;
+}
+a:link {/*未訪問のリンク*/
+    color:ffffff;
+    font-style:normal;
+    text-decoration:underline;
+}
+a:visited {/*訪問後のリンク*/
+    color:#ffffff;
+    text-decoration:underline;
+}
+a:hover {/*マウスをのせたとき*/
+    color:#ffffff;
+    font-style:normal;
+    text-decoration:underline;
+}
+a:active {/*クリック中*/
+    text-decoration:none;
+}
+
+
