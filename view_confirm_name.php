@@ -2,7 +2,7 @@
 <?php require_once 'heder.php'; ?>
 
 <h2 style="text-align: center">アドレス登録</h2>
-<form mithod="post" action="index.php">
+<form method="post" action="index.php">
         <div style="width:35%; margin: 0 auto;">
         <p>登録者確認</p>
       <table>
@@ -21,6 +21,7 @@
         </div>
     <p style="width:450px; margin: 0 auto;">この内容で登録します。<br />登録するメールアドレスと電話番号の数を選択して下さい。</p>
     <div style="width:500px; margin: 0 auto;">
+    <?php echo $error_msg; ?>
     <table>
         <tbody>
             <tr>

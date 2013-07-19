@@ -51,6 +51,10 @@ switch($action){
 
     //名前確認
     case "c_name":
+        $mail_count=$_POST['mail_counto'];
+        $tel_count=$_POST['tel_count'];
+        $count_no= 1;
+        
         $_SESSION['sei_k']=$sei_k;
         $_SESSION['sei_f']=$sei_f;
         $_SESSION['mei_k']=$mei_k;
@@ -59,12 +63,7 @@ switch($action){
         $_SESSION['group']=$group;
         $_SESSION['group_no']=$group_no;
 
-               
-        $mail_count=$_POST['mail_counto'];
-        $tel_count=$_POST['tel_count'];
-        $count_no= 1;
-        
-        require_once 'view_confirm_name.php';
+        require_once 'view_singup_mail.php';
         
     break;
 
@@ -90,36 +89,43 @@ switch($action){
         $_SESSION['mail']=$mail;
         $_SESSION['tel']=$tel;
         
-        require_once 'view_confirm_mail.php';
+        require_once 'view_complete.php';
         
     break;
 
 
     //全登録完了
     case "complete":
-        $mail_s=$_SESSION['mail'];
-        $tel_s=$_SESSION['tel'];
-        $sei_k_s =$_SESSION['sei_k'];
-        $sei_f_s =$_SESSION['sei_f'];
-        $mei_k_s =$_SESSION['mei_k'];
-        $mei_f_s =$_SESSION['mei_f'];
-        $no_s =$_SESSION['no'];
-        $group_no_s =$_SESSION['group_no'];
+        if(isset ($_POST['submit']) && $_POST['submit'] == '戻る'){
+            require_once 'view_singup_mail.php';
+        }
+        elseif(isset ($_POST['submit']) && $_POST['submit'] == '登録'){
+            $mail_s=$_SESSION['mail'];
+            $tel_s=$_SESSION['tel'];
+            $sei_k_s =$_SESSION['sei_k'];
+            $sei_f_s =$_SESSION['sei_f'];
+            $mei_k_s =$_SESSION['mei_k'];
+            $mei_f_s =$_SESSION['mei_f'];
+            $no_s =$_SESSION['no'];
+            $group_no_s =$_SESSION['group_no'];
 
         
         
-        unset($_SESSION['no']);
-        unset($_SESSION['sei_k']);
-        unset($_SESSION['sei_f']);
-        unset($_SESSION['mei_k']);
-        unset($_SESSION['mei_f']);
-        unset($_SESSION['mail']);
-        unset($_SESSION['tel']);
-        unset($_SESSION['group']);
-        unset($_SESSION['grpup_no']);
+        
+        
+        
+            unset($_SESSION['no']);
+            unset($_SESSION['sei_k']);
+            unset($_SESSION['sei_f']);
+            unset($_SESSION['mei_k']);
+            unset($_SESSION['mei_f']);
+            unset($_SESSION['mail']);
+            unset($_SESSION['tel']);
+            unset($_SESSION['group']);
+            unset($_SESSION['grpup_no']);
         
         require_once 'view_complete.php';
-        
+        }
     break;
 
 

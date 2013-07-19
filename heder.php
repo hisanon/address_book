@@ -20,7 +20,7 @@
         </table>
         <table>
             <tboby>
-                <tr  bgcolor=#ffffff text=#ffffff link=#ffffff vlink=#ffffff alink=#ffffff>
+                <tr>
                     <td class="heder">
                         <a href ="index.php">アドレス一覧</a>
                     </td>
