@@ -16,41 +16,22 @@
             <tr>
                 <td>フリガナ</td><td>:</td><td><?php echo $sei_f; ?></td><td>/</td><td><?php echo $mei_f; ?></td>
             </tr>
+            <tr>
+                <td>グループ</td><td>:</td><td colspan='3'><?php echo $group_name; ?></td>
+            </tr>
         </tbody>
     </table><br />
         </div>
-    <p style="width:450px; margin: 0 auto;">この内容で登録します。<br />登録するメールアドレスと電話番号の数を選択して下さい。</p>
-    <div style="width:500px; margin: 0 auto;">
-    <?php echo $error_msg; ?>
-    <table>
+    <p style="width:450px; margin: 0 auto;">この内容で登録します。<br />登録するメールアドレスと電話番号を入力して下さい。</p>
+    <table style="width:450px; margin: 0 auto;">
         <tbody>
             <tr>
-                <td>
-                    <label for="mail">メールアドレス：</label>
-                </td>
-                <td>
-                    <select id="mail" name="mail_count">
-                        <?php for($i= 1;$i<= 10;$i++){
-                            echo '<option value="'.$i.'"selected >'.$i.'件</option>';
-                        } ?>
-                    </select>
-                </td>
-                <td>
-                    登録　　　　
-                </td>
-                <td>
-                    <label for="tel">電話番号：</label>
-                </td>
-                <td>
-                    <select id="tel" name="tel_count">
-                        <?php for($j= 1;$j<= 10;$j++){
-                            echo '<option value="'.$j.'"selected >'.$j.'件</option>';
-                        } ?>
-                    </select>
-                </td>
-                <td style>
-                    登録
-                </td>
+                <td style="width:120px;">メールアドレス</td><td>：</td>
+                <td><input size="40" type ="text" name="mail" value="<?php $mail; ?>"></td>
+            </tr>
+            <tr>
+                <td style="text-align: center">電話番号</td><td>： </td>
+                <td><input size="40" type ="text" name="tel" value="<?php $tel; ?>"></td>
             </tr>
         </tbody>
     </table>
@@ -60,10 +41,10 @@
            <tr>
                <td width="150">
                    <input type="hidden" name="action" value="c_name">
-                   <input type="submit" value="アドレスの登録">
+                   <input type="submit" value="確認" name="submit">
                </td>
                <td width="50">
-                   <input type="submit" value="戻る">
+                   <input type="submit" value="戻る" name="submit">
                </td>
            </tr>
        </tbody>
