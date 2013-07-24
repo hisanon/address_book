@@ -85,25 +85,38 @@ function SELECTGROUP($db){
 
 //アドレス検索結果表示
 function SEARCH($db,$select,$search_word,$st,$lim){
-	$sth =$db->prepare("SELECT * FROM address WHERE $select = $search_word LIMIT $st,$lim");
+	$sth =$db->prepare("SELECT * FROM address WHERE $select = '$search_word' LIMIT $st,$lim");
 	$sth->execute();
 	return $sth;
+}
+
+
+//idの取得
+function SEARCHID($db){
+	$sth =$db->prepare("SELECT * FROM address ORDER by id desc ");
+	$sth->execute();
+        $row =$sth->fetch(PDO::FETCH_ASSOC);
+        $id = $row['id'];
+        
+        $searchid = $id + 1 ;
+        
+	return $searchid;
 }
 
 
 //アドレスの登録
 function INSERTADDRESS($db,$id,$sei_k,$mei_k,$sei_f,$mei_f,$group_no){
 try{
-	$sth =$db->prepare("INSERT INTO address (id,sei_k,mei_k,sei_f,mei_f,group_no) VALUES( ?,?,?,?,?,?,?,?,?,?)");
-	$sth->execute(array($id,$sei_k,$mei_k,$sei_f,$mei_f,$group_no));
+	$sth =$db->prepare("INSERT INTO address (id,sei_k,mei_k,sei_f,mei_f,group_no) VALUES( ?,?,?,?,?,?)");
+	$sth->execute(array($id,$sei_k,$mei_k,$sei_f,$mei_f,$group_no));         
 }
 catch(PDOException $e){
 	die('Insert failed: '.$e->getMessage());
 }
-	return $sth;
+        return $sth;
 }
 
-function INSERTMAIL($mail,$id){
+function INSERTMAIL($db,$mail,$id){
         $sth =$db->prepare("INSERT INTO user_mail (mail) VALUES(?)");
         $sth->execute(array($mail));
             
@@ -119,7 +132,7 @@ function INSERTMAIL($mail,$id){
 }
 
 
-function INSERTTEL($tel,$id){
+function INSERTTEL($db,$tel,$id){
         $sth =$db->prepare("INSERT INTO user_tel (tel) VALUES(?)");
         $sth->execute(array($tel));
             
@@ -150,5 +163,56 @@ function IDCHECK($db,$no){
 		}
 	return $shingup;
 }
+
+
+
+
+//アドレス帳の削除
+function DELETEADDRESS($db,$id){
+    try{
+        $sth =$db->prepare("DELETE FROM address WHERE id = $id");
+        $sth->execute();	
+    }
+    catch(PDOException $e){
+        die('Delete failed:'.$e->getMessage());
+    }
+        return $sth;
+    }
+
+    
+//アドレスの削除
+function DELETEMAIL($db,$id){    
+    $sth = $db -> prepare ("SELECT * FROM mail_connect WHERE  user_id = '$id' ") or die('ERROR!2');
+    $sth->execute();
+    while($row =$sth->fetch(PDO::FETCH_ASSOC)){
+        $mail_id=$row['mail_id'];
+        
+        $sth2 =$db->prepare("DELETE FROM user_mail WHERE id = $mail_id");
+        $sth2->execute();
+    }
+    $sth3 =$db->prepare("DELETE FROM mail_connect WHERE id = $id");
+    $sth3->execute();
+            
+    return $sth3;
+}
+
+
+//電話番号の削除
+function DELETETEL($db,$id){    
+    $sth = $db -> prepare ("SELECT * FROM tel_connect WHERE  user_id = '$id' ") or die('ERROR!2');
+    $sth->execute();
+    while($row =$sth->fetch(PDO::FETCH_ASSOC)){
+        $tel_id=$row['tel_id'];
+        
+        $sth2 =$db->prepare("DELETE FROM user_tel WHERE id = $tel_id");
+        $sth2->execute();
+    }
+    $sth3 =$db->prepare("DELETE FROM tel_connect WHERE id = $id");
+    $sth3->execute();
+            
+    return $sth3;
+}
+
+
 
 ?>

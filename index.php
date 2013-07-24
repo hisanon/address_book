@@ -73,7 +73,6 @@ switch($action){
         $group_no=$_POST['group_no'];
                 
         $shingup=IDCHECK($db,$no);
-        
         if($shingup == False){
             $error_msg ='この番号は既に登録されています。';
             require_once 'view_singup_name.php';
@@ -141,10 +140,16 @@ switch($action){
             $no_s =$_SESSION['no'];
             $group_no_s =$_SESSION['group_no'];
             $group_name_s =$_SESSION['group_name'];
-        
+            
+            if(empty($no_s)){
+                $searchid=SEARCHID($db);
+                $no_s = $searchid;
+            }
+                    
             $sth=INSERTADDRESS($db,$no_s,$sei_k_s,$mei_k_s,$sei_f_s,$mei_f_s,$group_no_s);
-            //$sth3= INSERTMAIL($mail_S,$no_s);
-            //$sth3= INSERTTEL($tel_S,$no_s);
+//            echo $lastrow.'aaaaa';
+            $sth3= INSERTMAIL($db,$mail_s,$no_s);
+            $sth3= INSERTTEL($db,$tel_s,$no_s);
         
             unset($_SESSION['no']);
             unset($_SESSION['sei_k']);
@@ -196,15 +201,136 @@ switch($action){
 	
         $group_name =$row['group_name'];
         
+        $_SESSION['id']=$id;
+        $_SESSION['sei_k']=$sei_k;
+        $_SESSION['mei_k']=$mei_k;
+        $_SESSION['sei_f']=$sei_f;
+        $_SESSION['mei_f']=$mei_f;
+        $_SESSION['group_no']=$group_no;
+        $_SESSION['mail']=$mail;
+        $_SESSION['tel']=$tel;
+        $_SESSION['group_name']=$group_name;
+        
         require_once 'view_change.php';
         
     break;
 
 
-    //確認画面
-    case "change":
-
+    //内容確認画面
+    case "change2":
+        $id = $_SESSION['id'];
+        $sei_k = $_SESSION['sei_k'];
+        $mei_k = $_SESSION['mei_k'];
+        $sei_f = $_SESSION['sei_f'];
+        $mei_f = $_SESSION['mei_f'];
+        $group_no = $_SESSION['group_no'];
+        $mail = $_SESSION['mail'];
+        $tel = $_SESSION['tel'];
+        $group_name = $_SESSION['group_name'];
         
+        if(isset ($_POST['submit']) && $_POST['submit'] == '編集'){
+            $edit=change;
+        }
+        elseif(isset ($_POST['submit']) && $_POST['submit'] == '追加'){
+            $edit=adding;
+        }
+        elseif(isset ($_POST['submit']) && $_POST['submit'] == '削除'){            
+            $edit=delete;
+        }
+        
+        require_once 'view_change.php';
+    break;
+    
+    
+    //変更確認画面
+    case "change3":
+        
+        if(isset ($_POST['submit']) && $_POST['submit'] == '確認'){
+            
+                $id =$_POST['id'];
+                $sei_k =$_POST['sei_k'];
+                $mei_k =$_POST['mei_k'];
+                $sei_f =$_POST['sei_f'];
+                $mei_f =$_POST['mei_f'];
+                $mail =$_POST['mail'];
+                $tel =$_POST['tel'];
+                $group_name =$_POST['group_name'];
+                $group_no =$_POST['group_no'];
+                
+
+                $mil_2 =$_POST['mail_2'];
+                $tel_2 =$_POST['tel_2'];            
+            
+                
+
+                
+            
+            //$edit= confirm;
+            echo 'bbbb';
+            echo $mail;
+            
+
+        }
+        elseif(isset ($_POST['submit']) && $_POST['submit'] == '戻る'){
+
+        $id = $_SESSION['id'];
+        $sei_k = $_SESSION['sei_k'];
+        $mei_k = $_SESSION['mei_k'];
+        $sei_f = $_SESSION['sei_f'];
+        $mei_f = $_SESSION['mei_f'];
+        $group_no = $_SESSION['group_no'];
+        $mail = $_SESSION['mail'];
+        $tel = $_SESSION['tel'];
+        $group_name = $_SESSION['group_name'];            
+            
+        }
+        require_once 'view_change.php';
+    break;
+    
+    
+    //編集実行
+    case "change4":
+        $id_s = $_SESSION['id'];
+        $sei_k_s = $_SESSION['sei_k'];
+        $mei_k_s = $_SESSION['mei_k'];
+        $sei_f_s = $_SESSION['sei_f'];
+        $mei_f_s = $_SESSION['mei_f'];
+        $group_no_s = $_SESSION['group_no'];
+        $mail_s = $_SESSION['mail'];
+        $tel_s = $_SESSION['tel'];
+        $group_name_s = $_SESSION['group_name'];
+        
+        if(isset ($_POST['submit']) && $_POST['submit'] == '削除'){
+            $sth=DELETEADDRESS($db,$id_s);
+            $sth3= DELETEMAIL($db,$id_s);
+            $sth3= DELETETEL($db,$id_s);
+        
+            $msg='削除が完了しました。';
+            $sth= NAMEDATA($db,$st,$lim);
+            require_once 'heder.php';
+            require_once 'view_address.php';
+        }
+        elseif(isset ($_POST['submit']) && $_POST['submit'] == '実行'){
+            
+            
+            $msg='変更が完了しました。';
+            
+            require_once 'heder.php';
+            require_once 'view_address.php';
+        }
+        if(isset ($_POST['submit']) && $_POST['submit'] == '戻る'){
+            $id = $_SESSION['id'];
+            $sei_k = $_SESSION['sei_k'];
+            $mei_k = $_SESSION['mei_k'];
+            $sei_f = $_SESSION['sei_f'];
+            $mei_f = $_SESSION['mei_f'];
+            $group_no = $_SESSION['group_no'];
+            $mail = $_SESSION['mail'];
+            $tel = $_SESSION['tel'];
+            $group_name = $_SESSION['group_name'];
+        
+            require_once 'view_change.php';
+        }        
     break;
 
         

@@ -1,13 +1,14 @@
 <!---アドレス一覧の表示--->
 <?php require_once 'model.php'; ?>
+<h3 style="color:red;"><?php echo $msg; ?></h3>
 <?php $dtcnt = COUNTS($db,$name,$comment,$pass); ?>
 		全登録数<?php echo $dtcnt; ?>件
 
 <table border="1" cellspacing="0" cellpadding="5">
     <tr style="background:#99CCFF">
         <td width="35" align="center">登録NO</td>
-        <td width="130">名前(姓)</td>
-        <td width="130">名前(名)</td>
+        <td width="130">名字(カナ)</td>
+        <td width="130">名前(カナ)</td>
         <td width="280">メールアドレス</td>
         <td width="180">電話番号</td>
         <td width="145">グループ</td>
