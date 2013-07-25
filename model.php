@@ -42,16 +42,26 @@ function NAMEDATA($db,$st,$lim){
 }
 
 
-//アドレス一覧のアドレス表示
+//アドレス一覧のアドレスid取得
 function MAILDATA($db,$id){
 	$sth =$db->prepare("SELECT * FROM mail_connect WHERE user_id = '$id'");
 	$sth->execute();
-        $row =$sth->fetch(PDO::FETCH_ASSOC);
-         $mail_id=$row['mail_id'];
-         $sth3 =$db->prepare("SELECT * FROM user_mail WHERE id = '$mail_id'");
-         $sth3->execute();
          
-            return $sth3;
+        
+        
+        
+        
+        
+            return $sth;
+}
+
+
+//アドレス一覧の表示
+function MAILIDDATA($db,$mail_id){
+        $sth4 =$db->prepare("SELECT * FROM user_mail WHERE id = '$mail_id'");
+        $sth4->execute();
+        
+            return $sth4;
 }
 
 
@@ -59,12 +69,16 @@ function MAILDATA($db,$id){
 function TELDATA($db,$id){
 	$sth =$db->prepare("SELECT * FROM tel_connect WHERE user_id = '$id'");
 	$sth->execute();
-
-        $row =$sth->fetch(PDO::FETCH_ASSOC);
-         $tel_id=$row['tel_id'];
-         $sth4 =$db->prepare("SELECT * FROM user_tel WHERE id = '$tel_id'");
-         $sth4->execute();
          
+            return $sth;
+}
+
+
+//アドレス一覧の表示
+function TELIDDATA($db,$tel_id){
+        $sth4 =$db->prepare("SELECT * FROM user_tel WHERE id = '$tel_id'");
+        $sth4->execute();
+        
             return $sth4;
 }
 
@@ -116,6 +130,7 @@ catch(PDOException $e){
         return $sth;
 }
 
+//アドレスの登録
 function INSERTMAIL($db,$mail,$id){
         $sth =$db->prepare("INSERT INTO user_mail (mail) VALUES(?)");
         $sth->execute(array($mail));
@@ -132,6 +147,7 @@ function INSERTMAIL($db,$mail,$id){
 }
 
 
+//電話番号の登録
 function INSERTTEL($db,$tel,$id){
         $sth =$db->prepare("INSERT INTO user_tel (tel) VALUES(?)");
         $sth->execute(array($tel));

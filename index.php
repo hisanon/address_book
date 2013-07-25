@@ -245,30 +245,68 @@ switch($action){
     //変更確認画面
     case "change3":
         
-        if(isset ($_POST['submit']) && $_POST['submit'] == '確認'){
+        if(isset ($_POST['submit']) && $_POST['submit'] == '変更確認'){
             
-                $id =$_POST['id'];
-                $sei_k =$_POST['sei_k'];
-                $mei_k =$_POST['mei_k'];
-                $sei_f =$_POST['sei_f'];
-                $mei_f =$_POST['mei_f'];
-                $mail =$_POST['mail'];
-                $tel =$_POST['tel'];
-                $group_name =$_POST['group_name'];
-                $group_no =$_POST['group_no'];
+            $id =$_POST['id'];
+            $sei_k =$_POST['sei_k'];
+            $mei_k =$_POST['mei_k'];
+            $sei_f =$_POST['sei_f'];
+            $mei_f =$_POST['mei_f'];
+            $mail =$_POST['mail'];
+            $tel =$_POST['tel'];
+            $group_no =$_POST['group_no'];
                 
+            $sth2 = GROUPDATA($db,$group_no);
+            $row =$sth2->fetch(PDO::FETCH_ASSOC);
+            $group_name =$row['group_name'];                
 
-                $mil_2 =$_POST['mail_2'];
-                $tel_2 =$_POST['tel_2'];            
+            $_SESSION['id_c']=$id;
+            $_SESSION['sei_k_c']=$sei_k;
+            $_SESSION['mei_k_c']=$mei_k;
+            $_SESSION['sei_f_c']=$sei_f;
+            $_SESSION['mei_f_c']=$mei_f;
+            $_SESSION['group_no_c']=$group_no;
+            $_SESSION['mail_c']=$mail;
+            $_SESSION['tel_c']=$tel;
+            $_SESSION['group_name_c']=$group_name;
             
-                
+            $edit=confirm_change;
+            
+        }
+        elseif(isset ($_POST['submit']) && $_POST['submit'] == '追加確認'){
 
+            $mail_2 =$_POST['mail_2'];
+            $tel_2 =$_POST['tel_2'];
+            
+            echo '中身'.$mail_2.'/'.$tel_2;
+            
+            $id = $_SESSION['id'];
+            $sei_k = $_SESSION['sei_k'];
+            $mei_k = $_SESSION['mei_k'];
+            $sei_f = $_SESSION['sei_f'];
+            $mei_f = $_SESSION['mei_f'];
+            $group_no = $_SESSION['group_no'];
+            $mail = $_SESSION['mail'];
+            $tel = $_SESSION['tel'];
+            $group_name = $_SESSION['group_name'];                
                 
             
-            //$edit= confirm;
-            echo 'bbbb';
-            echo $mail;
+            if(!empty($mail_2) || !empty($tel_2)){
+                
+                $edit=confirm_adding;
+                
+                $_SESSION['mail_2'] = $mil_2;
+                $_SESSION['tel_2']=$tel_2;
             
+            }
+            else{    
+                
+                $msg='変更内容をして下さい。';
+                $edit=adding;
+                
+            }
+            
+                require_once 'view_change.php';
 
         }
         elseif(isset ($_POST['submit']) && $_POST['submit'] == '戻る'){
@@ -282,7 +320,7 @@ switch($action){
         $mail = $_SESSION['mail'];
         $tel = $_SESSION['tel'];
         $group_name = $_SESSION['group_name'];            
-            
+        
         }
         require_once 'view_change.php';
     break;
@@ -299,6 +337,8 @@ switch($action){
         $mail_s = $_SESSION['mail'];
         $tel_s = $_SESSION['tel'];
         $group_name_s = $_SESSION['group_name'];
+        $mail_2_s = $_SESSION['mail_2'];
+        $tel_2_s = $_SESSION['tel_2'];
         
         if(isset ($_POST['submit']) && $_POST['submit'] == '削除'){
             $sth=DELETEADDRESS($db,$id_s);
@@ -310,11 +350,29 @@ switch($action){
             require_once 'heder.php';
             require_once 'view_address.php';
         }
-        elseif(isset ($_POST['submit']) && $_POST['submit'] == '実行'){
+        elseif(isset ($_POST['submit']) && $_POST['submit'] == '追加'){
+                            
+                if(!empty($mail_2) && empty($tel_2)){                
+                    $sth3=INSERTMAIL($db,$mail_2_s,$id_s);
+                }
+                elseif(empty($mail_2) && !empty($tel_2)){
+                    $sth3=INSERTTEL($db,$tel_2_s,$id_s);
+                }
+                else{
+                    $sth3=INSERTMAIL($db,$mail_2_s,$id_s);
+                    $sth3=INSERTTEL($db,$tel_2_s,$id_s);
+                }
+            
+            $msg='追加が完了しました。';
+            $sth= NAMEDATA($db,$st,$lim);
+            require_once 'heder.php';
+            require_once 'view_address.php';
+        }
+        elseif(isset ($_POST['submit']) && $_POST['submit'] == '変更'){
             
             
             $msg='変更が完了しました。';
-            
+            $sth= NAMEDATA($db,$st,$lim);
             require_once 'heder.php';
             require_once 'view_address.php';
         }

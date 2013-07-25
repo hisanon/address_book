@@ -25,25 +25,34 @@ while($row =$sth->fetch(PDO::FETCH_ASSOC)){
     $mei_f =$row['mei_f'];
     $group_no =$row['group_no'];
     
-    $sth3= MAILDATA($db,$id);
-    $row =$sth3->fetch(PDO::FETCH_ASSOC);
-    $mail=$row['mail'];
-    
-    $sth4= TELDATA($db,$id);
-    $row =$sth4->fetch(PDO::FETCH_ASSOC);
-    $tel=$row['tel'];
-            
     $sth2= GROUPDATA($db,$group_no);
     $row =$sth2->fetch(PDO::FETCH_ASSOC);
-	
-    $group_name =$row['group_name'];
+    $group_name =$row['group_name'];            	
  ?>
     <tr>
         <td><?php echo $id; ?></td>
         <td><?php echo $sei_k.'('.$sei_f.')'; ?></td>
         <td><?php echo $mei_k.'('.$mei_f.')'; ?></td>
-        <td><?php echo $mail; ?></td>
-        <td><?php echo $tel; ?></td>
+        <td><?php $sth3= MAILDATA($db,$id);
+                while($row =$sth3->fetch(PDO::FETCH_ASSOC)){
+                    $mail_id=$row['mail_id'];
+        
+                    $sth4=MAILIDDATA($db,$mail_id);
+                    $row =$sth4->fetch(PDO::FETCH_ASSOC);
+                    $mail=$row['mail'];
+                    
+                    echo $mail.'<br />';
+                } ?></td>
+        <td><?php $sth5= TELDATA($db,$id);
+                while($row =$sth5->fetch(PDO::FETCH_ASSOC)){
+                    $tel_id=$row['tel_id']; 
+                
+                    $sth6 = TELIDDATA($db,$tel_id);
+                    $row =$sth6->fetch(PDO::FETCH_ASSOC);
+                    $tel=$row['tel'];
+                    
+                    echo $tel.'<br />';
+                } ?></td>
         <td><?php echo $group_name; ?></td>
         <td><form method="post" action="index.php" >
                 <input type="hidden" value="<?php echo $id; ?>" name="change_id" />
@@ -52,7 +61,6 @@ while($row =$sth->fetch(PDO::FETCH_ASSOC)){
             </form>
         </td>
     </tr>
-
 <?php } ?>
 
 </table>
@@ -74,6 +82,10 @@ while($row =$sth->fetch(PDO::FETCH_ASSOC)){
     </tr>
 </table>
 
+                
+                
+
+      
 
 
 
