@@ -182,6 +182,100 @@ function IDCHECK($db,$no){
 
 
 
+//情報の変更
+function CHANGEADDRESS($db,$id_s,$id_c_s,$sei_k_c_s,$mei_k_c_s,$sei_f_c_s,$mei_f_c_s,$group_no_c_s){
+try{
+       	$sth =$db->prepare("UPDATE address SET id = :c_id, sei_k =:sei_k, mei_k = :mei_k, sei_f = :sei_f, mei_f = :mei_f, group_no = :group_no WHERE id = :id");
+        $sth->bindValue(':c_id',$id_c_s);
+	$sth->bindValue(':sei_k',$sei_k_c_s);
+        $sth->bindValue(':mei_k',$mei_k_c_s);
+        $sth->bindValue(':sei_f',$sei_f_c_s);
+        $sth->bindValue(':mei_f',$mei_f_c_s);
+        $sth->bindValue(':group_no',$group_no_c_s);
+        $sth->bindValue(':id',$id_s);
+        $sth->execute();
+	}
+catch(PDOException $e){
+	die('Delete failed:'.$e->getMessage());
+	}
+	return $sth;
+}
+
+
+
+
+function CHANGEBBS($db,$change_id_s,$change_comment_s,$change_user_id_s){
+try{
+       	$sth =$db->prepare("UPDATE comments SET comment= :comment , user_id= :user_id WHERE id = :id");
+        $sth->bindValue(':comment',$change_comment_s);
+	$sth->bindValue(':user_id',$change_user_id_s);
+        $sth->bindValue(':id',$change_id_s);
+        $sth->execute();
+	}
+catch(PDOException $e){
+	die('Delete failed:'.$e->getMessage());
+	}
+	return $sth;
+    
+}
+
+
+//アドレスの更新
+function SEARCHMAILID($db,$id_s){
+        $sth =$db->prepare("SELECT * FROM mail_connect WHERE user_id = '$id_s'");
+        $sth->execute();
+        
+        return $sth;
+}
+
+
+function SEARCHMAIL($db,$mail_id){
+        $sth2 =$db->prepare("SELECT * FROM user_mail WHERE id = '$mail_id'");
+        $sth2->execute();    
+        
+        return $sth2;
+}
+
+
+function CHANGEMAIL($db,$change_id,$mail_c_s,$mail_s){
+        $sth3 =$db->prepare("UPDATE user_mail SET mail =:c_mail WHERE id = :id");
+//        $sth3->bindValue(':c_id',NULL);
+        $sth3->bindValue(':c_mail',$mail_c_s);
+        $sth3->bindValue(':id',$change_id);
+        $sth3->execute();
+
+        return $sth3;
+}
+
+
+
+//電話番号の更新
+function SEARCHTELID($db,$id_s){
+        $sth4 =$db->prepare("SELECT * FROM tel_connect WHERE user_id = '$id_s'");
+        $sth4->execute();
+        
+        return $sth4;
+}
+
+
+function SEARCHTEL($db,$mail_id){
+        $sth5 =$db->prepare("SELECT * FROM user_tel WHERE id = '$tel_id'");
+        $sth5->execute();    
+        
+        return $sth5;
+}
+
+
+function CHANGETEL($db,$change_id,$tel_c_s,$tel_s){
+        $sth6 =$db->prepare("UPDATE user_tel SET tel =:c_tel WHERE id = :id");
+        $sth6->bindValue(':c_tel',$tel_c_s);
+        $sth6->bindValue(':id',$change_id);
+        $sth6->execute();
+
+        return $sth6;
+}
+
+
 
 //アドレス帳の削除
 function DELETEADDRESS($db,$id){
@@ -228,6 +322,7 @@ function DELETETEL($db,$id){
             
     return $sth3;
 }
+
 
 
 

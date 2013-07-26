@@ -39,23 +39,23 @@
                         <td colspan='3'><input size="30" type="text" name="mail" value="<?php echo $mail; ?>" ></td>
                      <?php } else{ ?>
                         <td colspan='3'>
-                        <?php $sth3= TELDATA($db,$id);
-                            while($row =$sth3->fetch(PDO::FETCH_ASSOC)){
-                                $mail_id=$row['mail_id'];
+                     <?php $sth3= MAILDATA($db,$id);
+                        while($row =$sth3->fetch(PDO::FETCH_ASSOC)){
+                        $mail_id=$row['mail_id'];
         
-                                $sth4=MAILIDDATA($db,$mail_id);
-                                $row =$sth4->fetch(PDO::FETCH_ASSOC);
-                                $mail=$row['mail'];
+                       $sth4=MAILIDDATA($db,$mail_id);
+                       $row =$sth4->fetch(PDO::FETCH_ASSOC);
+                       $mail=$row['mail'];
                     
-                                echo $mail.'<br />';
-                            } ?>　</td>
-                            <?php if($edit == adding){ ?> 
-                                </tr><tr><td>追加アドレス</td><td>:</td>
-                                <td colspan='3'><input  size="30" type="text" name="mail_2" value="" ></td>
-                            <?php } elseif(!empty($mail_2)){ ?>
-                                </tr><tr><td>追加アドレス</td><td>:</td>
-                                <td colspan='3'><?php echo $mail_2; ?></td>
-                            <?php } ?>
+                       echo $mail.'<br />';;
+                     } ?>　</td>
+                        <?php if($edit == adding){ ?> 
+                            </tr><tr><td>追加アドレス</td><td>:</td>
+                            <td colspan='3'><input  size="30" type="text" name="mail_2" value="" ></td>
+                        <?php } elseif(!empty($mail_2)){ ?>
+                            </tr><tr><td>追加アドレス</td><td>:</td>
+                            <td colspan='3'><?php echo $mail_2; ?></td>
+                        <?php } ?>
                      <?php } ?>
             </tr>
             <tr>

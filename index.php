@@ -369,7 +369,39 @@ switch($action){
             require_once 'view_address.php';
         }
         elseif(isset ($_POST['submit']) && $_POST['submit'] == '変更'){
+            $id_s=$_SESSION['id'];
+            $id_c_s=$_SESSION['id_c'];
+            $sei_k_c_s=$_SESSION['sei_k_c'];
+            $mei_k_c_s=$_SESSION['mei_k_c'];
+            $sei_f_c_s=$_SESSION['sei_f_c'];
+            $mei_f_c_s=$_SESSION['mei_f_c'];
+            $group_no_c_s=$_SESSION['group_no_c'];
+            $mail_s=$_SESSION['mail'];
+            $mail_c_s=$_SESSION['mail_c'];
+            $tel_s=$_SESSION['tel'];
+            $tel_c_s=$_SESSION['tel_c'];
             
+            if($mail_s == $mail_c_s){
+                $sth=SEARCHMAILID($db,$id_s);
+                while($row =$sth->fetch(PDO::FETCH_ASSOC)){
+                    $mail_id=$row['mail_id'];
+            
+                    $sth2=SEARCHMAIL($db,$mail_id);
+                    $row =$sth2->fetch(PDO::FETCH_ASSOC);
+                    $change_mail=$row['mail'];
+                    $change_id=$row['id'];
+                
+                    if($mail_s == $change_mail){
+                        $sth3=CHANGEMAIL($db,$id_s,$mail_c_s,$mail_s);
+                    }
+                }
+            }
+            if($tel_s == $tel_c_s){
+            $sth6=CHANGETEL($db,$id_s,$tel_s,$tel_c_s);
+            }
+            
+
+            $sth=CHANGEADDRESS($db,$id_s,$id_c_s,$sei_k_c_s,$mei_k_c_s,$sei_f_c_s,$mei_f_c_s,$group_no_c_s);
             
             $msg='変更が完了しました。';
             $sth= NAMEDATA($db,$st,$lim);
@@ -388,12 +420,13 @@ switch($action){
             $group_name = $_SESSION['group_name'];
         
             require_once 'view_change.php';
-        }        
+        }
     break;
 
         
     //アドレス一覧
     default:
+        
         $sth= NAMEDATA($db,$st,$lim);
         require_once 'heder.php';
         require_once 'view_address.php';
