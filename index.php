@@ -1,6 +1,5 @@
 <?php
 session_start();
-echo $action;
 
 require_once 'model.php';
 
@@ -147,7 +146,6 @@ switch($action){
             }
                     
             $sth=INSERTADDRESS($db,$no_s,$sei_k_s,$mei_k_s,$sei_f_s,$mei_f_s,$group_no_s);
-//            echo $lastrow.'aaaaa';
             $sth3= INSERTMAIL($db,$mail_s,$no_s);
             $sth3= INSERTTEL($db,$tel_s,$no_s);
         
@@ -252,14 +250,45 @@ switch($action){
             $mei_k =$_POST['mei_k'];
             $sei_f =$_POST['sei_f'];
             $mei_f =$_POST['mei_f'];
+            $group_no =$_POST['group_no'];
             $mail =$_POST['mail'];
             $tel =$_POST['tel'];
-            $group_no =$_POST['group_no'];
-                
+                                     
+            
+            //削除アドレスの取得
+            if(is_array($_POST['mail_delete'])){
+            foreach($_POST['mail_delete'] as $val){
+                $mail_delete.$i= $val;
+                    $delete_mail=$i;
+                $j=$j+1;                
+            }
+            
+            }
+            
+            
+            //削除電話番号の取得
+            if(is_array($_POST['tel_delete'])){
+            foreach($_POST['tel_delete'] as $val){
+                $tel_delete.$j= $val;
+                    $delete_tel=$j;
+                $j=$j+1;
+            }
+            $_SESSION['tel_d']=$tel_delete;
+            }
+            
+            
+            
+
+            if($group_no == 0){
+                $group_no = $_SESSION['group_no'];
+                $group_name =$_SESSION['group_name'];
+            }
+            else{
             $sth2 = GROUPDATA($db,$group_no);
             $row =$sth2->fetch(PDO::FETCH_ASSOC);
             $group_name =$row['group_name'];                
-
+            }
+            
             $_SESSION['id_c']=$id;
             $_SESSION['sei_k_c']=$sei_k;
             $_SESSION['mei_k_c']=$mei_k;
@@ -267,7 +296,11 @@ switch($action){
             $_SESSION['mei_f_c']=$mei_f;
             $_SESSION['group_no_c']=$group_no;
             $_SESSION['mail_c']=$mail;
+            $_SESSION['mail_d']=$mail_d;
             $_SESSION['tel_c']=$tel;
+            $_SESSION['tel_d']=$tel_d;
+            
+
             $_SESSION['group_name_c']=$group_name;
             
             $edit=confirm_change;
@@ -295,10 +328,14 @@ switch($action){
                 
                 $edit=confirm_adding;
                 
+                if(!empty($mail_2)){
                 $_SESSION['mail_2'] = $mil_2;
+                }
+                if(!empty($tel_2)){
                 $_SESSION['tel_2']=$tel_2;
-            
+                }
             }
+            
             else{    
                 
                 $msg='変更内容をして下さい。';
@@ -328,6 +365,9 @@ switch($action){
     
     //編集実行
     case "change4":
+        echo 'uuuuuu'.$mail_d.$tel_d;
+        
+        
         $id_s = $_SESSION['id'];
         $sei_k_s = $_SESSION['sei_k'];
         $mei_k_s = $_SESSION['mei_k'];
@@ -352,10 +392,10 @@ switch($action){
         }
         elseif(isset ($_POST['submit']) && $_POST['submit'] == '追加'){
                             
-                if(!empty($mail_2) && empty($tel_2)){                
+                if(!empty($mail_2_s) && empty($tel_2_s)){                
                     $sth3=INSERTMAIL($db,$mail_2_s,$id_s);
                 }
-                elseif(empty($mail_2) && !empty($tel_2)){
+                elseif(empty($mail_2_s) && !empty($tel_2_s)){
                     $sth3=INSERTTEL($db,$tel_2_s,$id_s);
                 }
                 else{
@@ -363,25 +403,51 @@ switch($action){
                     $sth3=INSERTTEL($db,$tel_2_s,$id_s);
                 }
             
+            unset($_SESSION['id']);
+            unset($_SESSION['sei_k']);
+            unset($_SESSION['mei_k']);
+            unset($_SESSION['sei_f']);
+            unset($_SESSION['mei_f']);
+            unset($_SESSION['group_no']);
+            unset($_SESSION['group_name']);
+            unset($_SESSION['mail']);
+            unset($_SESSION['mail_2']);
+            unset($_SESSION['tel']);
+            unset($_SESSION['tel_2']);
+
+            
             $msg='追加が完了しました。';
             $sth= NAMEDATA($db,$st,$lim);
             require_once 'heder.php';
             require_once 'view_address.php';
         }
-        elseif(isset ($_POST['submit']) && $_POST['submit'] == '変更'){
-            $id_s=$_SESSION['id'];
+        elseif(isset ($_POST['submit']) && $_POST['submit'] == '変更'){            
             $id_c_s=$_SESSION['id_c'];
             $sei_k_c_s=$_SESSION['sei_k_c'];
             $mei_k_c_s=$_SESSION['mei_k_c'];
             $sei_f_c_s=$_SESSION['sei_f_c'];
             $mei_f_c_s=$_SESSION['mei_f_c'];
             $group_no_c_s=$_SESSION['group_no_c'];
-            $mail_s=$_SESSION['mail'];
+            $mail_d_s=$_SESSION['mail_d'];
             $mail_c_s=$_SESSION['mail_c'];
-            $tel_s=$_SESSION['tel'];
+            $tel_d_s=$_SESSION['tel_d'];
             $tel_c_s=$_SESSION['tel_c'];
             
-            if($mail_s == $mail_c_s){
+
+            //選択削除の実行
+            if(!empty($mail_d_s) && !empty($tel_d_s)){                
+                $sth3= DELETE2MAIL($db,$mail_d_s,$id_s);
+                $sth3= DELETE2TEL($db,$tel_d_s,$id_s);
+            }
+            elseif(!empty($mail_d_s) && empty($tel_d_s)){
+                $sth3= DELETE2TEL($db,$tel_d_s,$id_s);
+            }
+            elseif(empty($mail_d_s) && !empty($tel_d_s)){
+                $sth3= DELETE2MAIL($db,$mail_d_s,$id_s);
+            }            
+            
+            
+            if($mail_s != $mail_c_s){
                 $sth=SEARCHMAILID($db,$id_s);
                 while($row =$sth->fetch(PDO::FETCH_ASSOC)){
                     $mail_id=$row['mail_id'];
@@ -389,19 +455,43 @@ switch($action){
                     $sth2=SEARCHMAIL($db,$mail_id);
                     $row =$sth2->fetch(PDO::FETCH_ASSOC);
                     $change_mail=$row['mail'];
-                    $change_id=$row['id'];
-                
+                    
                     if($mail_s == $change_mail){
-                        $sth3=CHANGEMAIL($db,$id_s,$mail_c_s,$mail_s);
+                        $sth3=CHANGEMAIL($db,$mail_c_s,$mail_id);
                     }
                 }
             }
-            if($tel_s == $tel_c_s){
-            $sth6=CHANGETEL($db,$id_s,$tel_s,$tel_c_s);
+            if($tel_s != $tel_c_s){
+                $sth4=SEARCHTELID($db,$id_s);
+                while($row =$sth4->fetch(PDO::FETCH_ASSOC)){
+                    $tel_id=$row['tel_id'];
+            
+                    $sth5=SEARCHTEL($db,$tel_id);
+                    $row =$sth5->fetch(PDO::FETCH_ASSOC);
+                    $change_tel=$row['tel'];
+                    
+                    if($tel_s == $change_tel){
+                        $sth6=CHANGETEL($db,$tel_c_s,$tel_id);
+                        }
+                }
             }
             
-
             $sth=CHANGEADDRESS($db,$id_s,$id_c_s,$sei_k_c_s,$mei_k_c_s,$sei_f_c_s,$mei_f_c_s,$group_no_c_s);
+            
+            unset($_SESSION['id']);
+            unset($_SESSION['id_c']);
+            unset($_SESSION['sei_k_c']);
+            unset($_SESSION['mei_k_c']);
+            unset($_SESSION['sei_f_c']);
+            unset($_SESSION['mei_f_c']);
+            unset($_SESSION['group_no_c']);
+            unset($_SESSION['mail']);
+            unset($_SESSION['mail_d']);
+            unset($_SESSION['mail_c']);
+            unset($_SESSION['tel']);
+            unset($_SESSION['tel_d']);
+            unset($_SESSION['tel_c']);
+            
             
             $msg='変更が完了しました。';
             $sth= NAMEDATA($db,$st,$lim);

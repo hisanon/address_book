@@ -4,6 +4,14 @@ require_once 'db.php';
 $action='';
 $action=$post['action'];
 
+//削除数の初期値設定
+$a=1;
+$b=1;
+$i=1;
+$j=1;
+$k=1;
+$l=1;
+
 
 //取り出す最大レコード数
 $lim =5;
@@ -237,11 +245,10 @@ function SEARCHMAIL($db,$mail_id){
 }
 
 
-function CHANGEMAIL($db,$change_id,$mail_c_s,$mail_s){
+function CHANGEMAIL($db,$mail_c_s,$mail_id){
         $sth3 =$db->prepare("UPDATE user_mail SET mail =:c_mail WHERE id = :id");
-//        $sth3->bindValue(':c_id',NULL);
         $sth3->bindValue(':c_mail',$mail_c_s);
-        $sth3->bindValue(':id',$change_id);
+        $sth3->bindValue(':id',$mail_id);
         $sth3->execute();
 
         return $sth3;
@@ -258,7 +265,7 @@ function SEARCHTELID($db,$id_s){
 }
 
 
-function SEARCHTEL($db,$mail_id){
+function SEARCHTEL($db,$tel_id){
         $sth5 =$db->prepare("SELECT * FROM user_tel WHERE id = '$tel_id'");
         $sth5->execute();    
         
@@ -266,10 +273,10 @@ function SEARCHTEL($db,$mail_id){
 }
 
 
-function CHANGETEL($db,$change_id,$tel_c_s,$tel_s){
+function CHANGETEL($db,$tel_c_s,$tel_id){
         $sth6 =$db->prepare("UPDATE user_tel SET tel =:c_tel WHERE id = :id");
         $sth6->bindValue(':c_tel',$tel_c_s);
-        $sth6->bindValue(':id',$change_id);
+        $sth6->bindValue(':id',$tel_id);
         $sth6->execute();
 
         return $sth6;
@@ -296,15 +303,29 @@ function DELETEMAIL($db,$id){
     $sth->execute();
     while($row =$sth->fetch(PDO::FETCH_ASSOC)){
         $mail_id=$row['mail_id'];
+        $connect_id=$row['id'];
         
         $sth2 =$db->prepare("DELETE FROM user_mail WHERE id = $mail_id");
         $sth2->execute();
-    }
-    $sth3 =$db->prepare("DELETE FROM mail_connect WHERE id = $id");
+    
+    $sth3 =$db->prepare("DELETE FROM mail_connect WHERE id = $connect_id");
+    $sth3->execute();
+    }        
+    return $sth3;
+}
+
+
+//アドレスの指定削除
+function DELETE2MAIL($db,$mail_d,$id){    
+    $sth2 =$db->prepare("DELETE FROM user_mail WHERE id = $mail_d");
+        $sth2->execute();
+    
+    $sth3 =$db->prepare("DELETE FROM mail_connect WHERE user_id = $id mail_id = $mail_d　");
     $sth3->execute();
             
     return $sth3;
 }
+
 
 
 //電話番号の削除
@@ -313,11 +334,25 @@ function DELETETEL($db,$id){
     $sth->execute();
     while($row =$sth->fetch(PDO::FETCH_ASSOC)){
         $tel_id=$row['tel_id'];
+        $connect_id=$row['id'];
         
         $sth2 =$db->prepare("DELETE FROM user_tel WHERE id = $tel_id");
         $sth2->execute();
-    }
-    $sth3 =$db->prepare("DELETE FROM tel_connect WHERE id = $id");
+    
+    $sth3 =$db->prepare("DELETE FROM tel_connect WHERE id = $connect_id");
+    $sth3->execute();
+    }        
+    return $sth3;
+}
+
+
+
+//アドレスの指定削除
+function DELETE2TEL($db,$tel_d,$id){    
+        $sth2 =$db->prepare("DELETE FROM user_tel WHERE id = $tel_d");
+        $sth2->execute();
+    
+    $sth3 =$db->prepare("DELETE FROM tel_connect WHERE user_id = '$id',　tel_id ='$tel_d' ");
     $sth3->execute();
             
     return $sth3;
