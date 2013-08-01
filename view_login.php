@@ -8,6 +8,7 @@
     <body class="back">
         <h1 class="h1">アドレス帳</h1>
         <h3 style="text-align: center">ログイン</h3>
+        <p style="color:red;"><?php echo $msg; ?></p>
     <form method="post" action="index.php " >
         <table style="width:400px; margin: 0 auto;">
             <tbody>

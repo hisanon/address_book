@@ -1,8 +1,7 @@
 
 <?php require_once 'heder.php'; ?>
 
-
-<?php echo $edit.'/'.$mail.'/'.$tel; ?>
+<?php echo $edit.'/'.$mail_c.'/'.$tel_c; ?>
 
 <form method ="post" action ="index.php">
 <div style="width:400px; margin: 0 auto;">
@@ -48,18 +47,20 @@
         
                             $sth4=MAILIDDATA($db,$mail_id);
                             $row =$sth4->fetch(PDO::FETCH_ASSOC);
-                            $mail=$row['mail']; ?>
-                            <?php if($edit == change){ ?>
+                            $mail=$row['mail']; 
+                            if($edit == change){ ?>
                                 <input size="30" type="text" name="mail[]" value="<?php echo $mail; ?>" >
                                 <input type="checkbox" name="mail_delete[]" value="<?php echo $i; ?>">削除
                             <?php } elseif($edit == adding || !empty($mail_2)){ ?>
                                 <?php echo $mail.'<br />'; ?>
                             <?php } elseif($edit==confirm_change){
                                 if($a == $delete_mail){
-                                    echo '<div style="text-decoration:line-through;color:red">'.$mail.'</div>';
+                                    echo '<div style="text-decoration:line-through;color:red">'.$mail_c[$a].'</div>';
                                     $_SESSION['mail_d']=$mail_id;
+                                }elseif($mail != $mail_c[$a]){
+                                    echo '<div style="color:red">'.$mail_c[$a].'</div>';
                                 }else{
-                                    echo $mail;
+                                    echo $mail_c[$a];
                                 }
                                     $a=$a+1;
                                 }
@@ -94,11 +95,12 @@
                                 <?php echo $tel.'<br />'; ?>
                             <?php } elseif($edit==confirm_change){ 
                                         if($b == $delete_tel){
-                                            echo '<div style="text-decoration:line-through;color:red">'.$tel.'</div>';
+                                            echo '<div style="text-decoration:line-through;color:red">'.$tel_c['$b'].'</div><br/>';
                                             $_SESSION['tel_d']=$tel_id;
-                                            echo $tel_id.'hhhhhhhhh';
+                                        }elseif($tel != $tel_c[$b]){
+                                            echo '<div style="color:red">'.$tel_c[$b].'</div><br/>';
                                         }else{
-                                            echo $tel;
+                                            echo $tel_c[$b].'<br/>';
                                         }
                                   $b=$b+1;
                             } else{ ?>

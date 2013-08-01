@@ -28,6 +28,5 @@ if(empty($search_item)){
 require_once 'view_address.php';
 ?>
 
-
 </body>
 </html>

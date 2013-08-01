@@ -31,6 +31,36 @@ if($prev<1){
     $prev=1;
 }
 $next = $p +1;
+
+
+//会員認証
+function SHINGUP($db,$user_name,$user_pass){
+	//ユーザー情報の確認
+	$sth = $db -> prepare ("SELECT * FROM user WHERE  user_name = '$user_name' AND pass = '$user_pass'") or die('ERROR!2');
+		$sth->execute();
+                $row =$sth->fetch(PDO::FETCH_ASSOC);
+		$id=$row['id'];
+	return $id;
+}
+
+
+
+//ログイン確認
+function LOGIN($db,$user_id,$user_name){
+	//ユーザー情報の確認
+	$sth = $db -> prepare ("SELECT * FROM user WHERE  id = '$user_id' AND user_name = '$user_name'") or die('ERROR!2');
+		$sth->execute();
+                $cnt =$sth ->rowCount();
+                if($cnt == 1){ 			
+			$login =True;
+		}
+		else{
+			$error_msg ='この内容は既に登録されています。';
+			$login =False;
+		}
+	return $shingup;
+}
+
 	
 
 //総登録数の確認
@@ -54,11 +84,6 @@ function NAMEDATA($db,$st,$lim){
 function MAILDATA($db,$id){
 	$sth =$db->prepare("SELECT * FROM mail_connect WHERE user_id = '$id'");
 	$sth->execute();
-         
-        
-        
-        
-        
         
             return $sth;
 }
@@ -105,15 +130,43 @@ function SELECTGROUP($db){
 	return $sth;
 }
 
-//アドレス検索結果表示
-function SEARCH($db,$select,$search_word,$st,$lim){
-	$sth =$db->prepare("SELECT * FROM address WHERE $select = '$search_word' LIMIT $st,$lim");
+//id検索結果表示
+function SEARCH($db,$search_word,$st,$lim){
+        $sth =$db->prepare("SELECT * FROM address WHERE id = '$search_word' LIMIT $st,$lim");
+	$sth->execute();
+	return $sth;
+}
+
+//名字(漢字)検索結果表示
+function SEARCHSEIK($db,$search_word,$st,$lim){
+	$sth =$db->prepare("SELECT * FROM address WHERE sei_k = '$search_word' LIMIT $st,$lim");
+	$sth->execute();
+	return $sth;
+}
+
+//名前(漢字)検索結果表示
+function SEARCHMEIK($db,$search_word,$st,$lim){
+	$sth =$db->prepare("SELECT * FROM address WHERE mei_k = $search_word LIMIT $st,$lim");
+	$sth->execute();
+	return $sth;
+}
+
+//名字(フリガナ)検索結果表示
+function SEARCHSEIF($db,$search_word,$st,$lim){
+	$sth =$db->prepare("SELECT * FROM address WHERE sei_f = $search_word LIMIT $st,$lim");
+	$sth->execute();
+	return $sth;
+}
+
+//名前(フリガナ)検索結果表示
+function SEARCHMEIF($db,$search_word,$st,$lim){
+	$sth =$db->prepare("SELECT * FROM address WHERE mei_f = $search_word LIMIT $st,$lim");
 	$sth->execute();
 	return $sth;
 }
 
 
-//idの取得
+//最後のidの取得
 function SEARCHID($db){
 	$sth =$db->prepare("SELECT * FROM address ORDER by id desc ");
 	$sth->execute();
@@ -297,7 +350,7 @@ function DELETEADDRESS($db,$id){
     }
 
     
-//アドレスの削除
+//メールアドレスの削除
 function DELETEMAIL($db,$id){    
     $sth = $db -> prepare ("SELECT * FROM mail_connect WHERE  user_id = '$id' ") or die('ERROR!2');
     $sth->execute();
@@ -316,14 +369,14 @@ function DELETEMAIL($db,$id){
 
 
 //アドレスの指定削除
-function DELETE2MAIL($db,$mail_d,$id){    
+function DELETE2MAIL($db,$mail_d){    
     $sth2 =$db->prepare("DELETE FROM user_mail WHERE id = $mail_d");
-        $sth2->execute();
+    $sth2->execute();
     
-    $sth3 =$db->prepare("DELETE FROM mail_connect WHERE user_id = $id mail_id = $mail_d　");
-    $sth3->execute();
-            
-    return $sth3;
+        $sth4 =$db->prepare("DELETE FROM mail_connect WHERE mail_id = '$mail_d'");
+        $sth4->execute();
+
+                return $sth4;
 }
 
 
@@ -347,18 +400,16 @@ function DELETETEL($db,$id){
 
 
 
-//アドレスの指定削除
-function DELETE2TEL($db,$tel_d,$id){    
-        $sth2 =$db->prepare("DELETE FROM user_tel WHERE id = $tel_d");
-        $sth2->execute();
+//電話番号の指定削除
+function DELETE2TEL($db,$tel_d){    
+    $sth5 =$db->prepare("DELETE FROM user_tel WHERE id = $tel_d");
+    $sth5->execute();
     
-    $sth3 =$db->prepare("DELETE FROM tel_connect WHERE user_id = '$id',　tel_id ='$tel_d' ");
-    $sth3->execute();
-            
-    return $sth3;
+        $sth7 =$db->prepare("DELETE FROM tel_connect WHERE tel_id = '$tel_d'");
+        $sth7->execute();
+
+                return $sth7;
 }
-
-
 
 
 ?>

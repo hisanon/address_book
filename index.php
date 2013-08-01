@@ -10,13 +10,53 @@ echo $action;
 switch($action){
     //ログイン
     case "login":
-        require_once 'logn.php';
+        $user_name=$_POST['user_name'];
+        $user_pass=$_POST['user_pass'];
+
+        if(!empty($user_name) && !empty($user_pass)){
+            $user_id=SHINGUP($db,$user_name,$user_pass);
+            
+            $login=LOGIN($db,$user_id,$user_name);
+            
+            if($login=TRUE){
+                $action="";
+                $id=$_SESSION['user_id'];
+                $user_name=$_SESSION['user_name'];
+                    require_once 'index.php';
+            }
+            else{
+                $msg='ログイン出来ませんでした。<br />内容を確認して下さい';
+                require_once 'login.php';
+            }
+        }
+        else{
+            $msg ='全て入力して下さい';
+            require_once 'login.php';
+        }
 
     break;
 
     
+    //ログアウト
+    case "logout":
+        if(isset ($_POST['submit']) && $_POST['submit'] == 'はい'){
+            $_SESSION = array();
+            require_once 'login.php';
+        }
+        elseif(isset ($_POST['submit']) && $_POST['submit'] == 'いいえ'){
+            $action='';
+            require_once 'index.php';
+        }
+    break;
+    
+    
     //アドレス検索
     case "search":
+      $user_id = $_SESSION['user_id'];
+      $user_name = $_SESSION['user_name'];
+      $login=LOGIN($db,$user_id,$user_name);
+      if($login == TRUE){
+          
         $search_word=$_POST['search_word'];
         $search_item=$_POST['search_item'];
         
@@ -25,32 +65,27 @@ switch($action){
         switch($search_item){
             //no検索
             case "1":
-                    $select= id;
-                    $sth = SEARCH($db,$select,$search_word,$st,$lim);
+                    $sth = SEARCH($db,$search_word,$st,$lim);
                 break;
             
             //名字検索(漢字)
             case "2":
-                    $select=sei_k;
-                    $sth = SEARCH($db,$select,$search_word,$st,$lim);
+                    $sth = SEARCHSEIK($db,$search_word,$st,$lim);
                 break;
             
             //名字検索(カナ)
             case "3":
-                    $select=sei_f;
-                    $sth = SEARCH($db,$select,$search_word,$st,$lim);
+                    $sth = SEARCHMEIK($db,$search_word,$st,$lim);
                 break;
             
             //名前検索(漢字)
             case "4":
-                    $select=mei_k;
-                    $sth = SEARCH($db,$select,$search_word,$st,$lim);
+                    $sth = SEARCHSEIF($db,$search_word,$st,$lim);
                 break;
             
             //名前検索(カナ)
             case "5":
-                    $select=mei_f;
-                    $sth = SEARCH($db,$select,$search_word,$st,$lim);
+                    $sth = SEARCHMEIF($db,$search_word,$st,$lim);
                 break;
                         
             default:
@@ -59,11 +94,21 @@ switch($action){
         }
         
         require_once 'view_search.php';
+      }
+      else{
+          $msg='ログインして下さい。';
+        require_once 'login.php';
+      }
     break;
 
 
     //名前登録
     case "s_name":
+      $user_id = $_SESSION['user_id'];
+      $user_name = $_SESSION['user_name'];
+      $login=LOGIN($db,$user_id,$user_name);
+      if($login == TRUE){
+          
         $no=$_POST['no'];
         $sei_k=$_POST['sei_k'];
         $sei_f=$_POST['sei_f'];
@@ -97,11 +142,21 @@ switch($action){
                 require_once 'view_confirm_name.php';
             }
         }
+      }
+      else{
+          $msg='ログインして下さい。';
+        require_once 'login.php';
+      }
     break;
 
 
     //名前確認
     case "c_name":
+      $user_id = $_SESSION['user_id'];
+      $user_name = $_SESSION['user_name'];
+      $login=LOGIN($db,$user_id,$user_name);
+      if($login == TRUE){
+        
         $submit=$_POST['submit'];
         if(isset($_POST['submit']) && $_POST['submit']=='戻る'){
             require_once 'view_singup_name.php';
@@ -121,11 +176,21 @@ switch($action){
         else{
                 require_once 'view_confirm_name.php';            
         }
+      }
+      else{
+          $msg='ログインして下さい。';
+        require_once 'login.php';
+      }
     break;
     
 
     //全登録完了
     case "complete":
+      $user_id = $_SESSION['user_id'];
+      $user_name = $_SESSION['user_name'];
+      $login=LOGIN($db,$user_id,$user_name);
+      if($login == TRUE){
+        
         if(isset ($_POST['submit']) && $_POST['submit'] == '戻る'){
             require_once 'view_singup_name.php';
         }
@@ -161,21 +226,24 @@ switch($action){
         
         require_once 'view_complete.php';
         }
-    break;
-
-
-    //ログアウト
-    case "logout":
-        require_once 'view_logout.php';
-        
+      }
+      else{
+          $msg='ログインして下さい。';
+        require_once 'login.php';
+      }
     break;
 
 
     //変更画面
     case "change":
+      $user_id = $_SESSION['user_id'];
+      $user_name = $_SESSION['user_name'];
+      $login=LOGIN($db,$user_id,$user_name);
+      if($login == TRUE){
+          
         $change_id=$_POST['change_id'];
         $select =id;
-        $sth=SEARCH($db,$select,$change_id,$st,$lim);
+        $sth=SEARCH($db,$change_id,$st,$lim);
         
         $row =$sth->fetch(PDO::FETCH_ASSOC);
                 
@@ -210,12 +278,23 @@ switch($action){
         $_SESSION['group_name']=$group_name;
         
         require_once 'view_change.php';
+
+      }
+      else{
+          $msg='ログインして下さい。';
+        require_once 'login.php';
+      }
         
     break;
 
 
     //内容確認画面
     case "change2":
+      $user_id = $_SESSION['user_id'];
+      $user_name = $_SESSION['user_name'];
+      $login=LOGIN($db,$user_id,$user_name);
+      if($login == TRUE){
+      
         $id = $_SESSION['id'];
         $sei_k = $_SESSION['sei_k'];
         $mei_k = $_SESSION['mei_k'];
@@ -237,11 +316,22 @@ switch($action){
         }
         
         require_once 'view_change.php';
+        
+      }
+      else{
+          $msg='ログインして下さい。';
+        require_once 'login.php';
+      }
+        
     break;
     
     
     //変更確認画面
     case "change3":
+      $user_id = $_SESSION['user_id'];
+      $user_name = $_SESSION['user_name'];
+      $login=LOGIN($db,$user_id,$user_name);
+      if($login == TRUE){
         
         if(isset ($_POST['submit']) && $_POST['submit'] == '変更確認'){
             
@@ -251,16 +341,33 @@ switch($action){
             $sei_f =$_POST['sei_f'];
             $mei_f =$_POST['mei_f'];
             $group_no =$_POST['group_no'];
-            $mail =$_POST['mail'];
-            $tel =$_POST['tel'];
-                                     
+
+            
+            if(is_array($_POST['mail'])){
+            foreach($_POST['mail'] as $val){
+                $mail_c[$i]= $val;
+                $mail_no[$i]=$i;
+                $i=$i+1;                
+            }
+            }
+            
+            
+            if(is_array($_POST['tel'])){
+            foreach($_POST['tel'] as $val){
+                $tel_c[$j] = $val;
+                $tel_no[$j]=$j;
+                $j=$j+1;                
+            }
+            
+            }
+            
             
             //削除アドレスの取得
             if(is_array($_POST['mail_delete'])){
             foreach($_POST['mail_delete'] as $val){
                 $mail_delete.$i= $val;
                     $delete_mail=$i;
-                $j=$j+1;                
+                $i=$i+1;                
             }
             
             }
@@ -360,13 +467,22 @@ switch($action){
         
         }
         require_once 'view_change.php';
+        
+      }
+      else{
+          $msg='ログインして下さい。';
+        require_once 'login.php';
+      }
+        
     break;
     
     
     //編集実行
     case "change4":
-        echo 'uuuuuu'.$mail_d.$tel_d;
-        
+      $user_id = $_SESSION['user_id'];
+      $user_name = $_SESSION['user_name'];
+      $login=LOGIN($db,$user_id,$user_name);
+      if($login == TRUE){
         
         $id_s = $_SESSION['id'];
         $sei_k_s = $_SESSION['sei_k'];
@@ -392,7 +508,7 @@ switch($action){
         }
         elseif(isset ($_POST['submit']) && $_POST['submit'] == '追加'){
                             
-                if(!empty($mail_2_s) && empty($tel_2_s)){                
+                if(!empty($mail_2_s) && empty($tel_2_s)){   
                     $sth3=INSERTMAIL($db,$mail_2_s,$id_s);
                 }
                 elseif(empty($mail_2_s) && !empty($tel_2_s)){
@@ -433,18 +549,8 @@ switch($action){
             $tel_d_s=$_SESSION['tel_d'];
             $tel_c_s=$_SESSION['tel_c'];
             
-
-            //選択削除の実行
-            if(!empty($mail_d_s) && !empty($tel_d_s)){                
-                $sth3= DELETE2MAIL($db,$mail_d_s,$id_s);
-                $sth3= DELETE2TEL($db,$tel_d_s,$id_s);
-            }
-            elseif(!empty($mail_d_s) && empty($tel_d_s)){
-                $sth3= DELETE2TEL($db,$tel_d_s,$id_s);
-            }
-            elseif(empty($mail_d_s) && !empty($tel_d_s)){
-                $sth3= DELETE2MAIL($db,$mail_d_s,$id_s);
-            }            
+            echo '$mail_d_s'.$mail_d_s.'$mail_d_s';
+            echo '$tel_d_s'.$tel_d_s.'$tel_d_s';            
             
             
             if($mail_s != $mail_c_s){
@@ -477,6 +583,17 @@ switch($action){
             }
             
             $sth=CHANGEADDRESS($db,$id_s,$id_c_s,$sei_k_c_s,$mei_k_c_s,$sei_f_c_s,$mei_f_c_s,$group_no_c_s);
+            
+                        //選択削除の実行
+            if(!empty($tel_d_s)){
+                $sth7= DELETE2TEL($db,$tel_d_s);
+                echo 'bbbbbb';
+            }
+            if(!empty($mail_d_s)){
+                $sth4= DELETE2MAIL($db,$mail_d_s);
+                echo 'ccccc';
+            }
+            
             
             unset($_SESSION['id']);
             unset($_SESSION['id_c']);
@@ -511,15 +628,33 @@ switch($action){
         
             require_once 'view_change.php';
         }
+
+      }
+      else{
+          $msg='ログインして下さい。';
+        require_once 'login.php';
+      }
+        
     break;
 
         
     //アドレス一覧
     default:
+      $user_id = $_SESSION['user_id'];
+      $user_name = $_SESSION['user_name'];
+      $login=LOGIN($db,$user_id,$user_name);
+      if($login == TRUE){
         
+
         $sth= NAMEDATA($db,$st,$lim);
         require_once 'heder.php';
         require_once 'view_address.php';
+        
+      }
+      else{
+          $msg='ログインして下さい。';
+        require_once 'login.php';
+      }
         
     break;
     
