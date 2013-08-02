@@ -9,6 +9,9 @@
         <h1 class="h1">アドレス帳</h1>
         <h3 style="text-align: center">ログイン</h3>
         <p style="color:red;"><?php echo $msg; ?></p>
+        
+        <?php echo $_SESSION['user_name']; ?>
+        
     <form method="post" action="index.php " >
         <table style="width:400px; margin: 0 auto;">
             <tbody>

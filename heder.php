@@ -13,7 +13,7 @@
                         <h1 class="h1">アドレス帳</h1>
                     </td>
                     <td class="name">
-                        ○○　○○　のアドレス帳
+                        <?php echo $user_name; ?>　のアドレス帳
                     </td>
                 </tr>
             </tbody>

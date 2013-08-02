@@ -1,11 +1,9 @@
 <?php
 session_start();
-
 require_once 'model.php';
 
 $action=$_POST['action'];
 
-echo $action;
 
 switch($action){
     //ログイン
@@ -18,12 +16,15 @@ switch($action){
             
             $login=LOGIN($db,$user_id,$user_name);
             
-            if($login=TRUE){
+            if($login =True){
                 $action="";
-                $id=$_SESSION['user_id'];
-                $user_name=$_SESSION['user_name'];
-                    require_once 'index.php';
-            }
+                $mag='ログインが完了しました。';
+                $_SESSION['user_id']=$user_id;
+                $_SESSION['user_name']=$user_name;
+                    $sth= NAMEDATA($db,$st,$lim);
+                    require_once 'heder.php';
+                    require_once 'view_address.php';
+                }
             else{
                 $msg='ログイン出来ませんでした。<br />内容を確認して下さい';
                 require_once 'login.php';
@@ -31,7 +32,7 @@ switch($action){
         }
         else{
             $msg ='全て入力して下さい';
-            require_once 'login.php';
+            require_once 'view_login.php';
         }
 
     break;
@@ -41,7 +42,7 @@ switch($action){
     case "logout":
         if(isset ($_POST['submit']) && $_POST['submit'] == 'はい'){
             $_SESSION = array();
-            require_once 'login.php';
+            require_once 'view_login.php';
         }
         elseif(isset ($_POST['submit']) && $_POST['submit'] == 'いいえ'){
             $action='';
@@ -55,12 +56,11 @@ switch($action){
       $user_id = $_SESSION['user_id'];
       $user_name = $_SESSION['user_name'];
       $login=LOGIN($db,$user_id,$user_name);
-      if($login == TRUE){
+      if($login =True){
           
         $search_word=$_POST['search_word'];
         $search_item=$_POST['search_item'];
         
-        echo $search_word.'/'.$search_item;
         
         switch($search_item){
             //no検索
@@ -97,7 +97,7 @@ switch($action){
       }
       else{
           $msg='ログインして下さい。';
-        require_once 'login.php';
+        require_once 'view_login.php';
       }
     break;
 
@@ -107,7 +107,7 @@ switch($action){
       $user_id = $_SESSION['user_id'];
       $user_name = $_SESSION['user_name'];
       $login=LOGIN($db,$user_id,$user_name);
-      if($login == TRUE){
+      if($login =True){
           
         $no=$_POST['no'];
         $sei_k=$_POST['sei_k'];
@@ -145,7 +145,7 @@ switch($action){
       }
       else{
           $msg='ログインして下さい。';
-        require_once 'login.php';
+        require_once 'view_login.php';
       }
     break;
 
@@ -155,7 +155,7 @@ switch($action){
       $user_id = $_SESSION['user_id'];
       $user_name = $_SESSION['user_name'];
       $login=LOGIN($db,$user_id,$user_name);
-      if($login == TRUE){
+      if($login =True){
         
         $submit=$_POST['submit'];
         if(isset($_POST['submit']) && $_POST['submit']=='戻る'){
@@ -179,7 +179,7 @@ switch($action){
       }
       else{
           $msg='ログインして下さい。';
-        require_once 'login.php';
+        require_once 'view_login.php';
       }
     break;
     
@@ -189,7 +189,7 @@ switch($action){
       $user_id = $_SESSION['user_id'];
       $user_name = $_SESSION['user_name'];
       $login=LOGIN($db,$user_id,$user_name);
-      if($login == TRUE){
+      if($login =True){
         
         if(isset ($_POST['submit']) && $_POST['submit'] == '戻る'){
             require_once 'view_singup_name.php';
@@ -229,17 +229,22 @@ switch($action){
       }
       else{
           $msg='ログインして下さい。';
-        require_once 'login.php';
+        require_once 'view_login.php';
       }
     break;
 
 
     //変更画面
     case "change":
+      
+        
+        
+        
+        
       $user_id = $_SESSION['user_id'];
       $user_name = $_SESSION['user_name'];
       $login=LOGIN($db,$user_id,$user_name);
-      if($login == TRUE){
+      if($login =True){
           
         $change_id=$_POST['change_id'];
         $select =id;
@@ -282,7 +287,7 @@ switch($action){
       }
       else{
           $msg='ログインして下さい。';
-        require_once 'login.php';
+        require_once 'view_login.php';
       }
         
     break;
@@ -290,10 +295,14 @@ switch($action){
 
     //内容確認画面
     case "change2":
+        
+        unset($_SESSION['mail_d']);
+        unset($_SESSION['tel_d']);
+        
       $user_id = $_SESSION['user_id'];
       $user_name = $_SESSION['user_name'];
       $login=LOGIN($db,$user_id,$user_name);
-      if($login == TRUE){
+      if($login =True){
       
         $id = $_SESSION['id'];
         $sei_k = $_SESSION['sei_k'];
@@ -320,7 +329,7 @@ switch($action){
       }
       else{
           $msg='ログインして下さい。';
-        require_once 'login.php';
+        require_once 'view_login.php';
       }
         
     break;
@@ -331,7 +340,7 @@ switch($action){
       $user_id = $_SESSION['user_id'];
       $user_name = $_SESSION['user_name'];
       $login=LOGIN($db,$user_id,$user_name);
-      if($login == TRUE){
+      if($login =True){
         
         if(isset ($_POST['submit']) && $_POST['submit'] == '変更確認'){
             
@@ -359,31 +368,7 @@ switch($action){
                 $j=$j+1;                
             }
             
-            }
-            
-            
-            //削除アドレスの取得
-            if(is_array($_POST['mail_delete'])){
-            foreach($_POST['mail_delete'] as $val){
-                $mail_delete.$i= $val;
-                    $delete_mail=$i;
-                $i=$i+1;                
-            }
-            
-            }
-            
-            
-            //削除電話番号の取得
-            if(is_array($_POST['tel_delete'])){
-            foreach($_POST['tel_delete'] as $val){
-                $tel_delete.$j= $val;
-                    $delete_tel=$j;
-                $j=$j+1;
-            }
-            $_SESSION['tel_d']=$tel_delete;
-            }
-            
-            
+            }            
             
 
             if($group_no == 0){
@@ -406,8 +391,6 @@ switch($action){
             $_SESSION['mail_d']=$mail_d;
             $_SESSION['tel_c']=$tel;
             $_SESSION['tel_d']=$tel_d;
-            
-
             $_SESSION['group_name_c']=$group_name;
             
             $edit=confirm_change;
@@ -417,9 +400,7 @@ switch($action){
 
             $mail_2 =$_POST['mail_2'];
             $tel_2 =$_POST['tel_2'];
-            
-            echo '中身'.$mail_2.'/'.$tel_2;
-            
+                        
             $id = $_SESSION['id'];
             $sei_k = $_SESSION['sei_k'];
             $mei_k = $_SESSION['mei_k'];
@@ -451,7 +432,60 @@ switch($action){
             }
             
                 require_once 'view_change.php';
-
+        }
+        elseif(isset ($_POST['submit']) && $_POST['submit'] == '全削除確認'){
+            $id = $_SESSION['id'];
+            $sei_k = $_SESSION['sei_k'];
+            $mei_k = $_SESSION['mei_k'];
+            $sei_f = $_SESSION['sei_f'];
+            $mei_f = $_SESSION['mei_f'];
+            $group_no = $_SESSION['group_no'];
+            $mail = $_SESSION['mail'];
+            $tel = $_SESSION['tel'];
+            $group_name = $_SESSION['group_name'];
+            
+            $set=all;
+            $edit=delete2;
+            
+            require_once 'view_change.php';
+        }
+        elseif(isset ($_POST['submit']) && $_POST['submit'] == '一部削除確認'){
+            $id = $_SESSION['id'];
+            $sei_k = $_SESSION['sei_k'];
+            $mei_k = $_SESSION['mei_k'];
+            $sei_f = $_SESSION['sei_f'];
+            $mei_f = $_SESSION['mei_f'];
+            $group_no = $_SESSION['group_no'];
+            $mail = $_SESSION['mail'];
+            $tel = $_SESSION['tel'];
+            $group_name = $_SESSION['group_name'];
+            
+            //削除アドレスの取得
+            if(is_array($_POST['mail_delete'])){
+            foreach($_POST['mail_delete'] as $val){
+                $mail_delete= $val;
+                    $delete_mail=$i;
+                $i=$i+1;                
+            }
+            $_SESSION['mail_d']=$mail_delete;
+            }
+            
+            
+            //削除電話番号の取得
+            if(is_array($_POST['tel_delete'])){
+            foreach($_POST['tel_delete'] as $val){
+                $tel_delete.$j= $val;
+                    $delete_tel=$j;
+                $j=$j+1;
+            }
+            $_SESSION['tel_d']=$tel_delete;
+            }
+            
+            $set=peace;
+            $edit=delete2;
+            
+            require_once 'view_change.php';
+            
         }
         elseif(isset ($_POST['submit']) && $_POST['submit'] == '戻る'){
 
@@ -466,12 +500,13 @@ switch($action){
         $group_name = $_SESSION['group_name'];            
         
         }
+        
         require_once 'view_change.php';
         
       }
       else{
           $msg='ログインして下さい。';
-        require_once 'login.php';
+        require_once 'view_login.php';
       }
         
     break;
@@ -482,7 +517,7 @@ switch($action){
       $user_id = $_SESSION['user_id'];
       $user_name = $_SESSION['user_name'];
       $login=LOGIN($db,$user_id,$user_name);
-      if($login == TRUE){
+      if($login =True){
         
         $id_s = $_SESSION['id'];
         $sei_k_s = $_SESSION['sei_k'];
@@ -491,20 +526,66 @@ switch($action){
         $mei_f_s = $_SESSION['mei_f'];
         $group_no_s = $_SESSION['group_no'];
         $mail_s = $_SESSION['mail'];
+        $mail_d_s = $_SESSION['mail_d'];
         $tel_s = $_SESSION['tel'];
+        $tel_d_s = $_SESSION['tel_d'];
         $group_name_s = $_SESSION['group_name'];
         $mail_2_s = $_SESSION['mail_2'];
         $tel_2_s = $_SESSION['tel_2'];
         
-        if(isset ($_POST['submit']) && $_POST['submit'] == '削除'){
-            $sth=DELETEADDRESS($db,$id_s);
-            $sth3= DELETEMAIL($db,$id_s);
-            $sth3= DELETETEL($db,$id_s);
-        
-            $msg='削除が完了しました。';
+        if(isset ($_POST['submit']) && $_POST['submit'] == '全削除'){
+                $sth=DELETEADDRESS($db,$id_s);
+                $sth3= DELETEMAIL($db,$id_s);
+                $sth3= DELETETEL($db,$id_s);
+
+            unset($_SESSION['id']);
+            unset($_SESSION['sei_k']);
+            unset($_SESSION['mei_k']);
+            unset($_SESSION['sei_f']);
+            unset($_SESSION['mei_f']);
+            unset($_SESSION['group_no']);
+            unset($_SESSION['group_name']);
+            unset($_SESSION['mail']);
+            unset($_SESSION['mail_d']);
+            unset($_SESSION['mail_2']);
+            unset($_SESSION['tel']);
+            unset($_SESSION['tel_d']);
+            unset($_SESSION['tel_2']);                
+                
+                
+            $msg='削除が完了しました。'.$set.'ssss';
             $sth= NAMEDATA($db,$st,$lim);
             require_once 'heder.php';
             require_once 'view_address.php';
+        }
+        elseif(isset ($_POST['submit']) && $_POST['submit'] == '一部削除'){
+            //選択削除の実行
+            if(!empty($tel_d_s)){
+                $sth7= DELETE2TEL($db,$tel_d_s);
+            }
+            if(!empty($mail_d_s)){
+                $sth4= DELETE2MAIL($db,$mail_d_s);
+            }            
+
+            unset($_SESSION['id']);
+            unset($_SESSION['sei_k']);
+            unset($_SESSION['mei_k']);
+            unset($_SESSION['sei_f']);
+            unset($_SESSION['mei_f']);
+            unset($_SESSION['group_no']);
+            unset($_SESSION['group_name']);
+            unset($_SESSION['mail']);
+            unset($_SESSION['mail_d']);
+            unset($_SESSION['mail_2']);
+            unset($_SESSION['tel']);
+            unset($_SESSION['tel_d']);
+            unset($_SESSION['tel_2']);            
+            
+            
+            $msg='削除が完了しました。'.$set.'ssss';
+            $sth= NAMEDATA($db,$st,$lim);
+            require_once 'heder.php';
+            require_once 'view_address.php';            
         }
         elseif(isset ($_POST['submit']) && $_POST['submit'] == '追加'){
                             
@@ -527,8 +608,10 @@ switch($action){
             unset($_SESSION['group_no']);
             unset($_SESSION['group_name']);
             unset($_SESSION['mail']);
+            unset($_SESSION['mail_d']);
             unset($_SESSION['mail_2']);
             unset($_SESSION['tel']);
+            unset($_SESSION['tel_d']);
             unset($_SESSION['tel_2']);
 
             
@@ -548,9 +631,6 @@ switch($action){
             $mail_c_s=$_SESSION['mail_c'];
             $tel_d_s=$_SESSION['tel_d'];
             $tel_c_s=$_SESSION['tel_c'];
-            
-            echo '$mail_d_s'.$mail_d_s.'$mail_d_s';
-            echo '$tel_d_s'.$tel_d_s.'$tel_d_s';            
             
             
             if($mail_s != $mail_c_s){
@@ -583,17 +663,7 @@ switch($action){
             }
             
             $sth=CHANGEADDRESS($db,$id_s,$id_c_s,$sei_k_c_s,$mei_k_c_s,$sei_f_c_s,$mei_f_c_s,$group_no_c_s);
-            
-                        //選択削除の実行
-            if(!empty($tel_d_s)){
-                $sth7= DELETE2TEL($db,$tel_d_s);
-                echo 'bbbbbb';
-            }
-            if(!empty($mail_d_s)){
-                $sth4= DELETE2MAIL($db,$mail_d_s);
-                echo 'ccccc';
-            }
-            
+                        
             
             unset($_SESSION['id']);
             unset($_SESSION['id_c']);
@@ -603,10 +673,8 @@ switch($action){
             unset($_SESSION['mei_f_c']);
             unset($_SESSION['group_no_c']);
             unset($_SESSION['mail']);
-            unset($_SESSION['mail_d']);
             unset($_SESSION['mail_c']);
             unset($_SESSION['tel']);
-            unset($_SESSION['tel_d']);
             unset($_SESSION['tel_c']);
             
             
@@ -632,7 +700,7 @@ switch($action){
       }
       else{
           $msg='ログインして下さい。';
-        require_once 'login.php';
+        require_once 'view_login.php';
       }
         
     break;
@@ -643,8 +711,7 @@ switch($action){
       $user_id = $_SESSION['user_id'];
       $user_name = $_SESSION['user_name'];
       $login=LOGIN($db,$user_id,$user_name);
-      if($login == TRUE){
-        
+      if($login =True){
 
         $sth= NAMEDATA($db,$st,$lim);
         require_once 'heder.php';
@@ -653,7 +720,7 @@ switch($action){
       }
       else{
           $msg='ログインして下さい。';
-        require_once 'login.php';
+        require_once 'view_login.php';
       }
         
     break;
